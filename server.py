@@ -28,6 +28,7 @@ def index():
 
 @app.route("/api/boards")
 def get_boards():
+    # Gets boards from database
     return jsonify(
         {
             "boards": boards,
@@ -39,11 +40,14 @@ def get_boards():
 
 @app.route("/api/boards/<int:id>/rename", methods=["POST"])
 def rename_board(id):
-    new_name = request.json.get("newName")
     global boards
+
+    # Gets the new name from the JSON post
+    new_name = request.json.get("newName")
 
     for index, board in enumerate(boards):
         if board.get("id") == id:
+            # This should be done in the database
             boards[index]["name"] = new_name
 
     return get_boards()

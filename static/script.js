@@ -1,26 +1,32 @@
 const refreshButton = document.querySelector("#refresh");
 const boardsHolder = document.querySelector("#boards");
 
-function init() {
+function init () {
+    //  Runs first thing
     refreshButton.addEventListener("click", loadBoards);
+
+    //  Listens to click on the board renaming buttons
     document.querySelectorAll(".renameBoard").forEach((button) => {
         button.addEventListener("click", rename);
     });
 }
 
-async function loadBoards() {
+async function loadBoards () {
+    //  Gets all boards from server
     const request = await fetch("/api/boards");
     if (request.ok) {
         alert("rebuilding boards");
         const response = await request.json();
 
+        //  Calls makeBoard to rebuild boards
         boardsHolder.innerHTML = response.boards
             .map((board) => makeBoard(board, response.statuses, response.cards))
             .join("");
     }
 }
 
-async function rename(e) {
+async function rename (e) {
+    //  get user input, sends to server, rebuilds all boards
     e.preventDefault();
     const newName = prompt("Enter new name");
 
@@ -39,11 +45,10 @@ async function rename(e) {
         init();
         loadBoards()
     }
-
-    console.log(newName);
 }
 
-function makeBoard(board, statuses, cards) {
+function makeBoard (board, statuses, cards) {
+    //  Builds board + all statuses
     return `
 <div data-board-id="${board.id}">
     <h2>Board title: ${board.name}</h2>
@@ -52,7 +57,8 @@ function makeBoard(board, statuses, cards) {
 </div>`;
 }
 
-function makeStatus(status, cards, boardId) {
+function makeStatus (status, cards, boardId) {
+    //  Builds status + its cards
     return `
 <div data-status-id="${status.id}">
     <h3>${status.name}</h3>
@@ -61,7 +67,8 @@ function makeStatus(status, cards, boardId) {
     `;
 }
 
-function makeCard(card, boardId, statusId) {
+function makeCard (card, boardId, statusId) {
+    //  Builds cards if board id and status id are correct
     if (card.board === boardId && card.status === statusId) {
         return `
             <div class="card" data-card-id="${card.id}">${card.name}</div>
@@ -69,4 +76,5 @@ function makeCard(card, boardId, statusId) {
     }
 }
 
+//  MAGIC!
 init();

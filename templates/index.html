@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <button id="refresh">Refresh all boards</button>
+    <div id="boards">
+        {% for board in boards %}
+            <div data-board-id="{{ board.id }}">
+                <h2>Board title: {{ board.name }}</h2>
+                <button data-board-id="{{ board.id }}" class="renameBoard">Rename me</button>
+                {% for status in statuses %}
+                    <div data-status-id="{{ status.id }}">
+                        <h3>{{ status.name }}</h3>
+
+                        {% for card in cards %}
+                            {% if status.id == card.status and board.id == card.board %}
+                                <div class="card" data-card-id="{{ card.id }}">{{ card.name }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
